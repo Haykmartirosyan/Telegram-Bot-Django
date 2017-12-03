@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>Welcome in the  Django-Telegram Bot </h1>
+    <h3>
+    <a href="https://api.telegram.org/bot{{ token }}/getMe" target="_blank"> Check Status</a>
+    </h3>
+
+    <br>
+    {% for bot in bot_list %}
+    <h3>This is list Bots</h3>
+        <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>USERNAME</th>
+        <th>FIRST_NAME</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{ bot.id }}</td>
+        <td>{{ bot.username }}</td>
+        <td>{{ bot.first_name }}</td>
+      </tr>
+    </tbody>
+  </table>
+    {% endfor %}
+<p>Visit <b><a href="{% url 'django-telegrambot' %}">Django-Telegrambot Dashboard</a></b> to see more info about your telegram bots</p>
+    <br><br>
+<h3>For test you can send message to bot</h3>
+
+        <form action='' method='post' id="message_form">{% csrf_token %}
+            <div class="col-lg-6">
+                <input type="text" name="message" class="form-control" id="mess" placeholder="Your Message">
+                <input type='submit' value='Send' class="btn btn-success form-control">
+            </div>
+        </form>
+
+    <div class="col-md-6">
+        <h2 class="text-success sent_mess"></h2>
+    </div>
+
+
+    <script>
+    $(document).ready(function () {
+        $('#message_form').on('submit', function (e) {
+            e.preventDefault();
+
+           var message = $('#mess').val();
+
+            $.ajax({
+                url: "https://api.telegram.org/bot{{ token }}/{{ method }}?chat_id={{ chat_id }}&text="+message+"",
+                success: function(result){
+                    $('.sent_mess').text('Message Sent').fadeOut(3000);
+
+                 },
+                error: function (error) {
+                     $('.sent_mess').text('Message Not Sent').fadeOut(4000);
+                }
+            });
+        })
+    })
+
+
+    </script>
+
+{% endblock %}
